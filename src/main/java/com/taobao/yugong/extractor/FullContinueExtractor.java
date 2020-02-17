@@ -106,6 +106,8 @@ public class FullContinueExtractor extends AbstractYuGongLifeCycle implements Ru
     jdbcTemplate.execute(fullRecordExtractor.getExtractSql(), (PreparedStatementCallback) ps -> {
           ps.setObject(paramterIndexMap.get("id"), id);
           ps.setInt(paramterIndexMap.get("limit"), context.getOnceCrawNum());
+//      ps.setObject(1,  id );
+//      ps.setInt(2, context.getOnceCrawNum());
           ps.setFetchSize(200);
           ResultSet rs = ps.executeQuery();
 
@@ -119,6 +121,7 @@ public class FullContinueExtractor extends AbstractYuGongLifeCycle implements Ru
                   .getColumnValue(rs, context.getSourceEncoding(), pk);
               pks.add(cv);
 
+//              id = rs.getObject(pk.getName().trim());; // 肯定只有一个主键，更新一下
               id = cv.getValue(); // 肯定只有一个主键，更新一下
             }
 

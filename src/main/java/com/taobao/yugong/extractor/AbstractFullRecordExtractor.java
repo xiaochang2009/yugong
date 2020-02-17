@@ -67,6 +67,7 @@ public abstract class AbstractFullRecordExtractor extends AbstractRecordExtracto
   }
   
   public void initContinueExtractor() {
+    queue = new LinkedBlockingQueue<Record>(context.getOnceCrawNum() * 2);
     fullContinueExtractor = new FullContinueExtractor(this, context, queue);
   }
 

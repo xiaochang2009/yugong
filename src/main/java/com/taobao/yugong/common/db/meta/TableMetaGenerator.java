@@ -385,9 +385,29 @@ public class TableMetaGenerator {
   /**
    * return pure name
    */
-  private static String getIdentifierName(String name, DatabaseMetaData metaData) throws 
+/*  private static String getIdentifierName(String name, DatabaseMetaData metaData) throws
       SQLException {
     return name;
+  }*/
+
+  /**
+   * 根据{@linkplain DatabaseMetaData}获取正确的表名
+   *
+   * <pre>
+   * metaData中的storesUpperCaseIdentifiers，storesUpperCaseQuotedIdentifiers，storesLowerCaseIdentifiers,
+   * storesLowerCaseQuotedIdentifiers,storesMixedCaseIdentifiers,storesMixedCaseQuotedIdentifiers
+   * </pre>
+   */
+  private static String getIdentifierName(String name, DatabaseMetaData metaData) throws SQLException {
+    if (metaData.storesMixedCaseIdentifiers()) {
+      return name; // 保留原始名
+    } else if (metaData.storesUpperCaseIdentifiers()) {
+      return StringUtils.upperCase(name);
+    } else if (metaData.storesLowerCaseIdentifiers()) {
+      return StringUtils.lowerCase(name);
+    } else {
+      return name;
+    }
   }
 
   private static int convertSqlType(int columnType, String typeName) {

@@ -25,6 +25,6 @@ public abstract class AbstractOracleRecordExtractor extends AbstractFullRecordEx
       throws SQLException {
     ColumnValue columnValue = YuGongUtils.getColumnValue(resultSet, encoding, colmnMeta);
     // 使用clone对象，避免translator修改了引用
-    return new ColumnValue(colmnMeta.clone(), columnValue);
+    return new ColumnValue(colmnMeta.clone(), columnValue.getValue());
   }
 }
