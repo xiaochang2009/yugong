@@ -619,6 +619,7 @@ public class YuGongController extends AbstractYuGongLifeCycle {
     context.setIgnoreSchema(config.getBoolean("yugong.table.ignoreSchema", false));
     context.setSkipApplierException(config.getBoolean("yugong.table.skipApplierException", false));
     context.setRunMode(runMode);
+    context.setClearTable(config.getBoolean("yugong.applier.clearTable", false));
     return context;
   }
 

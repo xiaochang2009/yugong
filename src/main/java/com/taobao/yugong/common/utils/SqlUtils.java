@@ -109,21 +109,20 @@ public class SqlUtils {
      * @return
      * @throws SQLException
      */
-    public static String sqlValueToString(ResultSet rs, int index, int sqlType) throws SQLException {
-        Class<?> requiredType = sqlTypeToJavaTypeMap.get(sqlType);
-        if (requiredType == null) {
-            throw new IllegalArgumentException("unknow java.sql.Types - " + sqlType);
-        }
-
-        return getResultSetValue(rs, index, requiredType);
-    }
+//    public static String sqlValueToString(ResultSet rs, int index, int sqlType) throws SQLException {
+//        Class<?> requiredType = sqlTypeToJavaTypeMap.get(sqlType);
+//        if (requiredType == null) {
+//            throw new IllegalArgumentException("unknow java.sql.Types - " + sqlType);
+//        }
+//
+//        return getResultSetValue(rs, index, requiredType);
+//    }
 
     /**
      * sqlValueToString方法的逆向过程
-     * 
      * @param value
      * @param sqlType
-     * @param isTextRequired
+     * @param isRequired
      * @param isEmptyStringNulled
      * @return
      */

@@ -212,8 +212,9 @@ public class SqlTemplate {
   }
 
   protected String makeFullName(String schemaName, String tableName) {
-    String full = schemaName + DOT + tableName;
-    return full.intern();
+   /* String full = schemaName + DOT + tableName;
+    return full.intern();*/
+    return tableName ;
   }
 
   protected void makeColumnEquals(StringBuilder sql, String[] columns, String separator) {

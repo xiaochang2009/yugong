@@ -36,6 +36,7 @@ public abstract class AbstractRecordApplier extends AbstractYuGongLifeCycle
     //for mysql
     public String applierInsertSql;
     public String applierUpdateSql;
+    public String applierDeleteSql;
 
     public Map<String, Integer> applierIndexs;
     public Map<String, Integer> applierPkIndexs;

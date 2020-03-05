@@ -186,7 +186,45 @@ public class FullRecordApplier extends AbstractRecordApplier {
                     });
                 }
 
-            } else {
+            }else if (sqlUnit.applierSql.startsWith("delete")) {
+                jdbcTemplate.execute(sqlUnit.applierSql, (PreparedStatementCallback) ps -> {
+                    for (Record record : batchRecords) {
+                        // 添加主键
+                        List<ColumnValue> pks = record.getPrimaryKeys();
+                        for (ColumnValue pk : pks) {
+                            int type = TypeMapping.map(sourceDbType, targetDbType, pk.getColumn().getType());
+                            ps.setObject(getIndex(sqlUnit.applierPkIndexs, pk), pk.getValue(), type);
+                        }
+                        ps.execute();
+                    }
+                    return null;
+                });
+
+                /** 先删除再插入 **/
+                //insert
+                    jdbcTemplate.execute(sqlUnit.applierInsertSql, (PreparedStatementCallback) ps -> {
+                        for (Record record : batchRecords) {
+                            // 先加字段，后加主键
+                            List<ColumnValue> cvs = record.getColumns();
+                            for (ColumnValue cv : cvs) {
+                                int type = TypeMapping.map(sourceDbType, targetDbType, cv.getColumn().getType());
+                                ps.setObject(getIndex(indexs, cv), cv.getValue(), type);
+                            }
+
+                            // 添加主键
+                            List<ColumnValue> pks = record.getPrimaryKeys();
+                            for (ColumnValue pk : pks) {
+                                int type = TypeMapping.map(sourceDbType, targetDbType, pk.getColumn().getType());
+                                ps.setObject(getIndex(indexs, pk), pk.getValue(), type);
+                            }
+                            ps.addBatch();
+                        }
+                        ps.executeBatch();
+                        return null;
+                    });
+
+            }
+            else {
 
                 jdbcTemplate.execute(sqlUnit.applierSql, (PreparedStatementCallback) ps -> {
                     for (Record record : batchRecords) {
@@ -215,6 +253,7 @@ public class FullRecordApplier extends AbstractRecordApplier {
 
         } catch (Exception e) {
             // catch the biggest exception,no matter how, rollback it;
+            e.printStackTrace();
             redoOneByOne = true;
             // conn.rollback();
         }
@@ -331,7 +370,43 @@ public class FullRecordApplier extends AbstractRecordApplier {
                     }
                 });
             }
-        } else {
+        }else if (sqlUnit.applierSql.startsWith("delete")) {
+            jdbcTemplate.execute(sqlUnit.applierSql, (PreparedStatementCallback) ps -> {
+                for (Record record : records) {
+                    // 添加主键
+                    List<ColumnValue> pks = record.getPrimaryKeys();
+                    for (ColumnValue pk : pks) {
+                        int type = TypeMapping.map(sourceDbType, targetDbType, pk.getColumn().getType());
+                        ps.setObject(getIndex(sqlUnit.applierPkIndexs, pk), pk.getValue(), type);
+                    }
+                    ps.execute();
+                }
+                return null;
+            });
+
+            /** 先删除再插入 **/
+            //insert
+                jdbcTemplate.execute(sqlUnit.applierInsertSql, (PreparedStatementCallback) ps -> {
+                    for (Record record : records) {
+                        // 先加字段，后加主键
+                        List<ColumnValue> cvs = record.getColumns();
+                        for (ColumnValue cv : cvs) {
+                            int type = TypeMapping.map(sourceDbType, targetDbType, cv.getColumn().getType());
+                            ps.setObject(getIndex(indexs, cv), cv.getValue(), type);
+                        }
+
+                        // 添加主键
+                        List<ColumnValue> pks = record.getPrimaryKeys();
+                        for (ColumnValue pk : pks) {
+                            int type = TypeMapping.map(sourceDbType, targetDbType, pk.getColumn().getType());
+                            ps.setObject(getIndex(indexs, pk), pk.getValue(), type);
+                        }
+                        ps.execute();
+                    }
+                    return null;
+                });
+        }
+        else {
             jdbcTemplate.execute(sqlUnit.applierSql, (PreparedStatementCallback) ps -> {
                 for (Record record : records) {
                     List<ColumnValue> pks = record.getPrimaryKeys();
@@ -414,11 +489,24 @@ public class FullRecordApplier extends AbstractRecordApplier {
                                         primaryKeys,
                                         columns);
                             } else {
-                                applierSql = SqlTemplates.MYSQL.getMergeSql(meta.getSchema(),
-                                        meta.getName(),
-                                        primaryKeys,
-                                        columns,
-                                        true);
+                                if(context.isClearTable()){
+                                    applierSql = SqlTemplates.MYSQL.getDeleteSql(
+                                            meta.getSchema(),
+                                            meta.getName(),
+                                            primaryKeys);
+                                    sqlUnit.applierInsertSql = SqlTemplates.MYSQL.getInsertSql(
+                                            meta.getSchema(),
+                                            meta.getName(),
+                                            primaryKeys,
+                                            columns);
+                                }
+                                else{
+                                    applierSql = SqlTemplates.MYSQL.getMergeSql(meta.getSchema(),
+                                            meta.getName(),
+                                            primaryKeys,
+                                            columns,
+                                            false);
+                                }
                             }
                         } else if (targetDbType == DbType.DRDS) {
                             applierSql = SqlTemplates.MYSQL.getMergeSql(meta.getSchema(),
