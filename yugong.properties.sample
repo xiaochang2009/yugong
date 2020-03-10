@@ -66,9 +66,9 @@ yugong.progress.print.interval=1
 
 # alarm email
 yugong.alarm.email.host=smtp.163.com
-yugong.alarm.email.username=ljy_jd05@163.com
-yugong.alarm.email.password=184819ljy
+yugong.alarm.email.username=test@163.com
+yugong.alarm.email.password=test
 yugong.alarm.email.stmp.port = 465
 yugong.alarm.email.ssl.support=true
-yugong.alarm.receiver=liujy@asiainfo.com
+yugong.alarm.receiver=test@asiainfo.com
 

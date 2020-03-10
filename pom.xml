@@ -463,6 +463,14 @@
                     <value>central</value>
                 </property>
             </activation>
+            <distributionManagement>
+                <snapshotRepository>
+                    <uniqueVersion>true</uniqueVersion>
+                    <id>AL-Snapshot</id>
+                    <name>fz-snapshot-distribution</name>
+                    <url>http://192.168.1.22:8081/nexus/content/repositories/AL-Snapshot/</url>
+                </snapshotRepository>
+            </distributionManagement>
 
             <!-- <distributionManagement>
                <snapshotRepository>

@@ -109,49 +109,53 @@ public class FullContinueExtractor extends AbstractYuGongLifeCycle implements Ru
 //      ps.setObject(1,  id );
 //      ps.setInt(2, context.getOnceCrawNum());
           ps.setFetchSize(200);
-          ResultSet rs = ps.executeQuery();
+      List<Record> result;
+      try (ResultSet rs = ps.executeQuery()) {
 
-          List<Record> result = Lists.newArrayListWithCapacity(context.getOnceCrawNum());
-          while (rs.next()) {
-            List<ColumnValue> cms = new ArrayList<>();
-            List<ColumnValue> pks = new ArrayList<>();
+        result = Lists.newArrayListWithCapacity( context.getOnceCrawNum() );
+        while (rs.next()) {
+          List<ColumnValue> cms = new ArrayList<>();
+          List<ColumnValue> pks = new ArrayList<>();
 
-            for (ColumnMeta pk : context.getTableMeta().getPrimaryKeys()) {
-              ColumnValue cv = fullRecordExtractor
-                  .getColumnValue(rs, context.getSourceEncoding(), pk);
-              pks.add(cv);
+          for (ColumnMeta pk : context.getTableMeta().getPrimaryKeys()) {
+            ColumnValue cv = fullRecordExtractor
+                    .getColumnValue( rs, context.getSourceEncoding(), pk );
+            pks.add( cv );
 
 //              id = rs.getObject(pk.getName().trim());; // 肯定只有一个主键，更新一下
-              id = cv.getValue(); // 肯定只有一个主键，更新一下
-            }
-
-            for (ColumnMeta col : context.getTableMeta().getColumns()) {
-              ColumnValue cv = fullRecordExtractor
-                  .getColumnValue(rs, context.getSourceEncoding(), col);
-              cms.add(cv);
-            }
-
-            Record re = new Record(context.getTableMeta().getSchema(),
-                context.getTableMeta().getName(),
-                pks,
-                cms);
-
-            result.add(re);
+            id = cv.getValue(); // 肯定只有一个主键，更新一下
           }
 
-          if (result.size() < 1) {
-            fullRecordExtractor.setStatus(ExtractStatus.TABLE_END);
-            running = false;
+          for (ColumnMeta col : context.getTableMeta().getColumns()) {
+            ColumnValue cv = fullRecordExtractor
+                    .getColumnValue( rs, context.getSourceEncoding(), col );
+            cms.add( cv );
           }
 
-          for (Record record : result) {
-            try {
-              queue.put(record);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt(); // 传递
-              throw new YuGongException(e);
-            }
+          Record re = new Record( context.getTableMeta().getSchema(),
+                  context.getTableMeta().getName(),
+                  pks,
+                  cms );
+
+          result.add( re );
+        }
+        if (result.size() < 1) {
+          fullRecordExtractor.setStatus(ExtractStatus.TABLE_END);
+          running = false;
+        }
+
+        for (Record record : result) {
+          try {
+            queue.put(record);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // 传递
+            throw new YuGongException(e);
           }
+        }
+      }catch (Exception e){
+        e.printStackTrace();
+        throw new YuGongException(e);
+      }
           return null;
         });
   }

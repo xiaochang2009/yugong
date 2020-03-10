@@ -1,6 +1,5 @@
 package com.taobao.yugong.extractor.oracle;
 
-import com.google.common.collect.Lists;
 import com.taobao.yugong.common.db.meta.ColumnMeta;
 import com.taobao.yugong.common.db.meta.ColumnValue;
 import com.taobao.yugong.common.db.sql.SqlTemplates;
@@ -12,16 +11,11 @@ import com.taobao.yugong.common.model.record.Record;
 import com.taobao.yugong.common.utils.thread.NamedThreadFactory;
 import com.taobao.yugong.exception.YuGongException;
 
-import lombok.Setter;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.StatementCallback;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,18 +30,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class OracleOnceFullRecordExtractor extends AbstractOracleRecordExtractor {
 
   private static final String FORMAT = "select /*+parallel(t)*/ {0} from {1}.{2} t";
-  @Setter
-  private String extractSql;
-  private LinkedBlockingQueue<Record> queue;
-  private Thread extractorThread = null;
-  private YuGongContext context;
+//  @Setter
+//  private String extractSql;
+//  private LinkedBlockingQueue<Record> queue;
+//  private Thread extractorThread = null;
+//  private YuGongContext context;
 
   public OracleOnceFullRecordExtractor(YuGongContext context) {
+    super();
     this.context = context;
   }
 
   public void start() {
-    super.start();
+//    super.start();
+
+    if (running) {
+      return;
+    }
+
+    running = true;
 
     if (StringUtils.isEmpty(extractSql)) {
       String columns = SqlTemplates.COMMON.makeColumn(context.getTableMeta().getColumnsWithPrimary());
@@ -69,13 +70,13 @@ public class OracleOnceFullRecordExtractor extends AbstractOracleRecordExtractor
   public void stop() {
     super.stop();
 
-    extractorThread.interrupt();
+    /*extractorThread.interrupt();
     try {
       extractorThread.join(2 * 1000);
     } catch (InterruptedException e) {
       // ignore
     }
-    tracer.update(context.getTableMeta().getFullName(), ProgressStatus.SUCCESS);
+    tracer.update(context.getTableMeta().getFullName(), ProgressStatus.SUCCESS);*/
   }
 
   public Position ack(List<Record> records) throws YuGongException {

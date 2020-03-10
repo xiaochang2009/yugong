@@ -34,9 +34,9 @@ import com.taobao.yugong.conf.YugongConfiguration;
 import com.taobao.yugong.exception.YuGongException;
 import com.taobao.yugong.extractor.AbstractRecordExtractor;
 import com.taobao.yugong.extractor.RecordExtractor;
-import com.taobao.yugong.extractor.mysql.MysqlCanalExtractor;
 import com.taobao.yugong.extractor.mysql.MysqlCanalRedisExtractor;
 import com.taobao.yugong.extractor.mysql.MysqlFullRecordExtractor;
+import com.taobao.yugong.extractor.mysql.MysqlOnceFullRecordExtractor;
 import com.taobao.yugong.extractor.oracle.AbstractOracleRecordExtractor;
 import com.taobao.yugong.extractor.oracle.OracleAllRecordExtractor;
 import com.taobao.yugong.extractor.oracle.OracleFullRecordExtractor;
@@ -332,8 +332,22 @@ public class YuGongController extends AbstractYuGongLifeCycle {
         if (!(ignorePkInspection.length > 0 && ArrayUtils.contains(ignorePkInspection, tableHolder.table.getName()))) {
           if (!forceFull && (!isOnlyPkIsNumber(tableHolder.table) || isTableExtracOnce || !StringUtils
                   .isEmpty(extractSql))) {
-            throw new YuGongException("FullRecordExtractor Condition Error, no PK, table: "
-                    + tableHolder.table.getName());
+            if (sourceDbType == DbType.ORACLE) {
+              OracleOnceFullRecordExtractor recordExtractor = new OracleOnceFullRecordExtractor(context);
+              recordExtractor.setExtractSql(extractSql);
+              recordExtractor.setTracer(progressTracer);
+              return recordExtractor;
+            }
+            else if (sourceDbType == DbType.MYSQL) {
+              MysqlOnceFullRecordExtractor recordExtractor = new MysqlOnceFullRecordExtractor(context);
+              recordExtractor.setExtractSql(extractSql);
+              recordExtractor.setTracer(progressTracer);
+              return recordExtractor;
+            }
+            else {
+              throw new YuGongException("FullRecordExtractor Condition Error, no PK, table: "
+                      + tableHolder.table.getName());
+            }
           }
         }
 

@@ -1,12 +1,8 @@
 package com.taobao.yugong.common.db.meta;
 
-import com.taobao.yugong.common.utils.YuGongToStringStyle;
-
 import lombok.Data;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import java.sql.JDBCType;
 
 /**
@@ -24,8 +20,8 @@ public class ColumnMeta {
 
   public ColumnMeta(String columnName, int columnType) {
 //    this.rawName = columnName;
-    this.name = columnName;
-//    this.name = StringUtils.upperCase(columnName);// 统一为大写
+//    this.name = columnName;
+    this.name = StringUtils.upperCase(columnName);// 统一为大写
     this.type = columnType;
   }
 

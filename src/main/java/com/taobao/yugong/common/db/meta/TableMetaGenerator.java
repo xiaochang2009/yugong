@@ -1,6 +1,5 @@
 package com.taobao.yugong.common.db.meta;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.taobao.yugong.common.model.DbType;
 import com.taobao.yugong.common.utils.LikeUtil;
@@ -12,7 +11,6 @@ import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -100,8 +98,8 @@ public class TableMetaGenerator {
         String name = rs.getString(3);
         if ((schemaNameIdentifier == null || LikeUtil.isMatch(schemaNameIdentifier, catlog) || LikeUtil.isMatch(schemaNameIdentifier, schema))
             && LikeUtil.isMatch(tableNameIdentifier, name)) {
-          //          primaryKeys.add(StringUtils.upperCase(rs.getString(4)));
-          primaryKeys.add(rs.getString(4));
+                    primaryKeys.add(StringUtils.upperCase(rs.getString(4)));
+//          primaryKeys.add(rs.getString(4));
         }
       }
       rs.close();
@@ -122,8 +120,8 @@ public class TableMetaGenerator {
           String name = rs.getString(3);
           if ((schemaNameIdentifier == null || LikeUtil.isMatch(schemaNameIdentifier, catlog) || LikeUtil.isMatch(schemaNameIdentifier, schema))
               && LikeUtil.isMatch(tableNameIdentifier, name)) {
-            //            String indexName = StringUtils.upperCase(rs.getString(6));
-            String indexName = rs.getString(6);
+                        String indexName = StringUtils.upperCase(rs.getString(6));
+//            String indexName = rs.getString(6);
             if ("PRIMARY".equals(indexName)) {
               continue;
             }
@@ -134,8 +132,8 @@ public class TableMetaGenerator {
               break;
             }
 
-            //            uniqueKeys.add(StringUtils.upperCase(rs.getString(9)));
-            uniqueKeys.add(rs.getString(9));
+                        uniqueKeys.add(StringUtils.upperCase(rs.getString(9)));
+//            uniqueKeys.add(rs.getString(9));
           }
         }
         rs.close();
