@@ -26,10 +26,10 @@ import javax.sql.DataSource;
 public class DataSourceFactory extends AbstractYuGongLifeCycle implements YuGongLifeCycle {
 
   private static final Logger logger = LoggerFactory.getLogger(DataSourceFactory.class);
-  private int maxWait = 10 * 1000;
-  private int minIdle = 0;
-  private int initialSize = 0;
-  private int maxActive = 32;
+  private int maxWait = 30 * 1000;
+  private int minIdle = 1;
+  private int initialSize = 20;
+  private int maxActive = 200;
 
   private Map<DataSourceConfig, DataSource> dataSources;
 
@@ -80,7 +80,18 @@ public class DataSourceFactory extends AbstractYuGongLifeCycle implements YuGong
       dataSource.setMaxActive(maxActive);
       dataSource.setMaxWait(maxWait);
       dataSource.setDriverClassName(dbType.getDriver());
-      dataSource.setTestOnBorrow(true);
+//      dataSource.setTestOnBorrow(true);
+      //配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      dataSource.setTimeBetweenEvictionRunsMillis( 60000 );
+      //配置一个连接在池中最小生存的时间，单位是毫秒
+      dataSource.setMinEvictableIdleTimeMillis( 1800000 );
+      dataSource.setRemoveAbandoned( true );
+      //超时时间；单位为秒
+      dataSource.setRemoveAbandonedTimeout(120  );
+      dataSource.setTestWhileIdle( true );
+      dataSource.setTestOnReturn( false );
+      dataSource.setTestOnBorrow( false );
+      dataSource.setLogAbandoned( true );
       // 动态的参数
       if (props != null && props.size() > 0) {
         for (Map.Entry<Object, Object> entry : props.entrySet()) {

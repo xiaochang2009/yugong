@@ -1,4 +1,4 @@
-package com.taobao.yugong.extractor.oracle;
+package com.taobao.yugong.extractor.mysql;
 
 import com.taobao.yugong.common.db.meta.ColumnMeta;
 import com.taobao.yugong.common.db.meta.ColumnValue;
@@ -10,7 +10,7 @@ import com.taobao.yugong.common.model.position.Position;
 import com.taobao.yugong.common.model.record.Record;
 import com.taobao.yugong.common.utils.thread.NamedThreadFactory;
 import com.taobao.yugong.exception.YuGongException;
-
+import com.taobao.yugong.extractor.AbstractFullRecordExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.StatementCallback;
@@ -22,21 +22,21 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * 基于oracle的一次性任务
+ * 基于mysql的一次性任务
  *
  * @author agapple 2013-9-10 下午5:12:33
  * @since 3.0.0
  */
-public class OracleOnceFullRecordExtractor extends AbstractOracleRecordExtractor {
+public class MysqlOnceFullRecordExtractor extends AbstractFullRecordExtractor {
 
-  private static final String FORMAT = "select /*+parallel(t)*/ {0} from {1} t";
+  private static final String FORMAT = "select {0} from {1} t";
 //  @Setter
 //  private String extractSql;
 //  private LinkedBlockingQueue<Record> queue;
 //  private Thread extractorThread = null;
 //  private YuGongContext context;
 
-  public OracleOnceFullRecordExtractor(YuGongContext context) {
+  public MysqlOnceFullRecordExtractor(YuGongContext context) {
     super();
     this.context = context;
   }

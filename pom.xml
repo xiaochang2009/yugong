@@ -108,7 +108,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.0.17</version>
+            <version>1.1.21</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -117,10 +117,15 @@
             <version>1.16.16</version>
         </dependency>
         <!-- oracle download from http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-10201-088211.html -->
+        <!--<dependency>-->
+            <!--<groupId>com.oracle</groupId>-->
+            <!--<artifactId>ojdbc14</artifactId>-->
+            <!--<version>10.2.0.4.0</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
-            <version>10.2.0.4.0</version>
+            <groupId>com.github.noraui</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.2</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>

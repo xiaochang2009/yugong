@@ -33,8 +33,8 @@ public class OracleFullRecordExtractor extends AbstractOracleRecordExtractor {
 
   // private static final String FORMAT =
   // "select /*+index(t {0})*/ {1} from {2}.{3} t where {4} > ? and rownum <= ? order by {4} asc";
-  private static final String FORMAT = "select * from (select {0} from {1}.{2} t where {3} > ? order by {3} asc) where rownum <= ?";
-  private static final String MIN_PK_FORMAT = "select min({0}) from {1}.{2}";
+  private static final String FORMAT = "select * from (select {0} from {1} t where {2} > ? order by {2} asc) where rownum <= ?";
+  private static final String MIN_PK_FORMAT = "select min({0}) from {1}";
 
   private static Map<String, Integer> PARAMETER_INDEX_MAP = ImmutableMap.of("id", 1, "limit", 2);
 
@@ -57,13 +57,13 @@ public class OracleFullRecordExtractor extends AbstractOracleRecordExtractor {
       // TableMetaGenerator.getTableIndex(context.getSourceDs(),
       // schemaName, tableName);
       String colStr = SqlTemplates.COMMON.makeColumn(context.getTableMeta().getColumnsWithPrimary());
-      this.extractSql = new MessageFormat(FORMAT).format(new Object[]{colStr, schemaName, tableName, primaryKey});
+      this.extractSql = new MessageFormat(FORMAT).format(new Object[]{colStr, tableName, primaryKey});
       // logger.info("table : {} \n\t extract sql : {}",
       // context.getTableMeta().getFullName(), extractSql);
     }
 
     if (getMinPkSql == null && StringUtils.isNotBlank(primaryKey)) {
-      this.getMinPkSql = new MessageFormat(MIN_PK_FORMAT).format(new Object[]{primaryKey, schemaName, tableName});
+      this.getMinPkSql = new MessageFormat(MIN_PK_FORMAT).format(new Object[]{primaryKey, tableName});
     }
   }
 }

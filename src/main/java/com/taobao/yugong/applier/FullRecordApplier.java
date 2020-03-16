@@ -489,7 +489,7 @@ public class FullRecordApplier extends AbstractRecordApplier {
                                         primaryKeys,
                                         columns);
                             } else {
-                                if(context.isClearTable()){
+                                if(context.isClearTable() || isAllPks(columns)){
                                     applierSql = SqlTemplates.MYSQL.getDeleteSql(
                                             meta.getSchema(),
                                             meta.getName(),
@@ -515,10 +515,23 @@ public class FullRecordApplier extends AbstractRecordApplier {
                                     columns,
                                     false);
                         } else if (targetDbType == DbType.ORACLE) {
-                            applierSql = SqlTemplates.ORACLE.getMergeSql(meta.getSchema(),
-                                    meta.getName(),
-                                    primaryKeys,
-                                    columns);
+                            if(context.isClearTable() || isAllPks(columns)){
+                                applierSql = SqlTemplates.ORACLE.getDeleteSql(
+                                        meta.getSchema(),
+                                        meta.getName(),
+                                        primaryKeys);
+                                sqlUnit.applierInsertSql = SqlTemplates.ORACLE.getInsertSql(
+                                        meta.getSchema(),
+                                        meta.getName(),
+                                        primaryKeys,
+                                        columns);
+                            }
+                            else{
+                                applierSql = SqlTemplates.ORACLE.getMergeSql(meta.getSchema(),
+                                        meta.getName(),
+                                        primaryKeys,
+                                        columns);
+                            }
                         } else if (targetDbType == DbType.SQL_SERVER) {
                             applierSql = SqlTemplates.SQL_SERVER.getMergeSql(meta.getSchema(),
                                     meta.getName(), primaryKeys, columns, !record.isEnableCompositeIndexes());
@@ -574,5 +587,15 @@ public class FullRecordApplier extends AbstractRecordApplier {
         }
 
         return sqlUnit;
+    }
+
+    /**
+     * is only one primary key, and this key is number
+     */
+    private boolean isAllPks(String[] columns) {
+        if (columns==null || columns.length==0) {
+            return true;
+        }
+        return false;
     }
 }

@@ -184,6 +184,10 @@ public class TableMetaGenerator {
         while (rs.next()) {
           String schema = rs.getString(1);
           String name = rs.getString(2);
+          if(StringUtils.equalsIgnoreCase(name,"_sys_global_sequence_"))
+          {
+            continue;
+          }
           if (!StringUtils.startsWithIgnoreCase(name, "MLOG$_") && !StringUtils.startsWithIgnoreCase(name, "RUPD$_")) {
             table = new Table("TABLE", schema, name);
             result.add(table);
@@ -200,7 +204,10 @@ public class TableMetaGenerator {
           String schema = rs.getString(2);
           String name = rs.getString(3);
           String type = rs.getString(4);
-
+          if(StringUtils.equalsIgnoreCase(name,"_sys_global_sequence_"))
+          {
+            continue;
+          }
           if (!StringUtils.startsWithIgnoreCase(name, "MLOG$_") && !StringUtils.startsWithIgnoreCase(name, "RUPD$_")) {
             table = new Table(type, StringUtils.isEmpty(catlog) ? schema : catlog, name);
             result.add(table);

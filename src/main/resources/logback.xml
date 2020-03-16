@@ -123,17 +123,17 @@
     </appender>
 
     <logger name="extractor" additivity="false">
-        <level value="INFO"/>
+        <level value="error"/>
         <appender-ref ref="EXTRACTOR_LOG"/>
     </logger>
 
     <logger name="applier" additivity="false">
-        <level value="INFO"/>
+        <level value="error"/>
         <appender-ref ref="APPLIER_LOG"/>
     </logger>
 
     <logger name="check" additivity="false">
-        <level value="INFO"/>
+        <level value="error"/>
         <appender-ref ref="CHECK_LOG"/>
     </logger>
 
