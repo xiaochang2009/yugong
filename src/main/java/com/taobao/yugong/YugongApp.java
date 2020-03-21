@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.FileConverter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.taobao.yugong.common.stats.ProgressTracer;
 import com.taobao.yugong.common.version.VersionInfo;
 import com.taobao.yugong.conf.YugongConfiguration;
 import com.taobao.yugong.controller.YuGongController;
@@ -73,6 +74,9 @@ public class YugongApp {
       }
       try {
         log.info("## Stop the YuGong");
+        ProgressTracer progressTracer = controller.getProgressTracer();
+        String reMsg=progressTracer.print(true);
+        log.info("## ProgressTracer ==="+reMsg);
         controller.stop();
       } catch (Throwable e) {
         log.warn("## Something goes wrong when stopping YuGong:\n{}",
@@ -85,6 +89,9 @@ public class YugongApp {
     Thread.sleep(3 * 1000); // 等待3s，清理上下文
     log.info("## stop the YuGong");
     if (controller.isStart()) {
+      ProgressTracer progressTracer = controller.getProgressTracer();
+      String reMsg=progressTracer.print(true);
+      log.info("## ProgressTracer ==="+reMsg);
       controller.stop();
     }
     log.info("## YuGong is down.");

@@ -33,8 +33,10 @@ public class YuGongContext {
   private String targetEncoding = "UTF-8";
   private String[] ignorePkInspection;  //忽略源表pk检查的表，多表用英文逗号分隔
   private Map<String, String[]> specifiedPks = new HashMap<>(); //每张表指定的主键或联合主键
-  //是否 先清空表，再做全量迁移
+  //是否先做删除，再做插入（udal库 分片表）
   private boolean clearTable = false;
+  //是否读取上次记录的最新迁移位置
+  private boolean readLast = true;
 
   public YuGongContext cloneGlobalContext() {
     YuGongContext context = new YuGongContext();
@@ -51,6 +53,7 @@ public class YuGongContext {
     context.setIgnorePkInspection(ignorePkInspection);
     context.setSpecifiedPks(specifiedPks);
     context.setClearTable( clearTable );
+    context.setReadLast( readLast );
     return context;
   }
 

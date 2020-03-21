@@ -169,8 +169,15 @@ public class YuGongInstance extends AbstractYuGongLifeCycle {
         positioner.start();
       }
 
-      Position lastPosition = positioner.getLatest();
-      context.setLastPosition(lastPosition);
+      Position lastPosition=null;
+      if(context.isReadLast()){
+        lastPosition = positioner.getLatest();
+        context.setLastPosition(lastPosition);
+      }
+      else{
+        context.setLastPosition(null);
+      }
+
 
       if (!extractor.isStart()) {
         extractor.start();

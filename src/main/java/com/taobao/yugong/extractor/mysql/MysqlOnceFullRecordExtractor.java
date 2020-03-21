@@ -29,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MysqlOnceFullRecordExtractor extends AbstractFullRecordExtractor {
 
-  private static final String FORMAT = "select {0} from {1} t";
+  private static final String FORMAT = "select {0} from {1} t limit 200000";
 //  @Setter
 //  private String extractSql;
 //  private LinkedBlockingQueue<Record> queue;

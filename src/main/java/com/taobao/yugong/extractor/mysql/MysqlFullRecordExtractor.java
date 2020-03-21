@@ -25,7 +25,7 @@ public class MysqlFullRecordExtractor extends AbstractFullRecordExtractor {
   public void init() {
     super.init();
     String primaryKey = context.getTableMeta().getPrimaryKeys().get(0).getName();
-    String schemaName = context.getTableMeta().getSchema();
+//    String schemaName = context.getTableMeta().getSchema();
     String tableName = context.getTableMeta().getName();
     this.getMinPkSql = MessageFormat.format(MIN_PK_FORMAT, primaryKey, tableName);
     this.parameterIndexMap = PARAMETER_INDEX_MAP;

@@ -89,6 +89,7 @@ public class YuGongController extends AbstractYuGongLifeCycle {
   private AlarmService alarmService;
 
   private TableController tableController;
+
   private ProgressTracer progressTracer;
   private List<YuGongInstance> instances = Lists.newArrayList();
   private ScheduledExecutorService schedule;
@@ -634,6 +635,7 @@ public class YuGongController extends AbstractYuGongLifeCycle {
     context.setSkipApplierException(config.getBoolean("yugong.table.skipApplierException", false));
     context.setRunMode(runMode);
     context.setClearTable(config.getBoolean("yugong.applier.clearTable", false));
+    context.setReadLast(config.getBoolean("yugong.run.positioner.readLast", true));
     return context;
   }
 
@@ -958,5 +960,9 @@ public class YuGongController extends AbstractYuGongLifeCycle {
     jdbcTemplate.execute("CREATE MATERIALIZED VIEW " + mlogName + " AS SELECT SYSDATE FROM DUAL");
     jdbcTemplate.execute("DROP MATERIALIZED VIEW " + mlogName);
     logger.info("check mlog privileges is ok");
+  }
+
+  public ProgressTracer getProgressTracer() {
+    return progressTracer;
   }
 }

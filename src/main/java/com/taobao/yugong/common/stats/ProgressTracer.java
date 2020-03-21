@@ -45,7 +45,7 @@ public class ProgressTracer {
     print(false);
   }
 
-  public void print(boolean detail) {
+  public String print(boolean detail) {
     int fulling = 0;
     int incing = 0;
     int failed = 0;
@@ -84,22 +84,31 @@ public class ProgressTracer {
       msg = String.format(CHECK_FORMAT, unknow, fulling, success, failed);
     }
 
+    StringBuffer detailMsg=new StringBuffer( "" );
+    detailMsg.append( "{" ).append( msg ).append( "}" ).append( System.getProperty("line.separator") );
     logger.info("{}", msg);
     if (detail) {
       if (fulling > 0) {
         if (mode == RunMode.CHECK) {
           logger.info("对比中:" + fullingTables);
+          detailMsg.append( "对比中:" ).append( fullingTables ).append( System.getProperty("line.separator") );
         } else {
           logger.info("全量中:" + fullingTables);
+          detailMsg.append( "全量中:" ).append( fullingTables ).append( System.getProperty("line.separator") );
         }
       }
       if (incing > 0) {
         logger.info("增量中:" + incingTables);
+        detailMsg.append( "增量中:" ).append( incingTables ).append( System.getProperty("line.separator") );
       }
       if (failed > 0) {
         logger.info("异常数:" + failedTables);
+        detailMsg.append( "异常数:" ).append( failedTables ).append( System.getProperty("line.separator") );
       }
       logger.info("已完成:" + successTables);
+      detailMsg.append( "已完成:" ).append( successTables ).append( System.getProperty("line.separator") );
     }
+
+    return detailMsg.toString();
   }
 }
